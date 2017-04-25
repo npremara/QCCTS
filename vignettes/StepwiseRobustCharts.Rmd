@@ -1,0 +1,76 @@
+---
+title: "Estimation of  mean and standard deviation using the stepwise robust Shewhart approaches "
+author: "L. P. Nadeeka D. Premarathna"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::pdf_document:
+    includes:
+      in_header: header.tex
+bibliography: QCCTSvignettes.bib
+vignette: >
+  %\VignetteIndexEntry{Estimation-of-mean-and-standard-deviation-using-the-stepwise-robust-Shewhart-approaches}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+## Introduction
+The stepwise robust chart procedure for Shewhart $\bar{X}$ chart by @Nazir2014246  used both $\overline{IQR}_{10}$ and  $\overline{TM}_{10}$. These two procedures were designed for equal subgroup sizes but unequal subgroup sizes in financial data are common due to market closures, public holidays etc. Hence the two robust estimators found in @Nazir2014130 and @Nazir2014246 are adopted for unequal subgroups using the appropriate unbiasing constants. These two procedures are used to estimate the unknown parameters $\mu$ and $\sigma$ from limited Phase~I data which are required to find the Phase~II control limits. 
+
+
+The \CRANpkg{QCCTS} package is developed  to implement these two procedures.
+
+
+
+## Estimation of $\sigma$ for Phase~II
+
+The interquartile range of subgroup $i$ is calculated as $IQR_i=Q_{i,3}-Q_{i,1}$, where $Q_{i,1}=x_{i,(a)}$ and $Q_{i,3}=x_{i,(b)}$, with $a=\left \lceil n_i/4 \right \rceil$, $b=n-a+1$, and $x_{i,(m)}$ the $m^{\mathrm{th}}$--order statistics of subgroup $i$. Each $IQR_i$ is corrected  by dividing its normalizing constant, $x_{\overline{IQR}_{10}}(n_i)$. These values are given in Table~1 of @Nazir2014130. The 10% trimmed mean of the sample interquartile ranges is used as an unbiased estimate for $\sigma$, 
+
+$$\overline{IQR}_{10}=\frac{1}{k-2(\left \lceil k/10 \right \rceil-1)}\left [ \sum_{m=\left \lceil k/10 \right \rceil}^{k-\left \lceil k/10 \right \rceil+1} IQR_{\left (m  \right )}\right ]$$
+
+This procedure involves two main steps namely screening of subgroups affected by parameter shifts and then the removal of individual outliers (signal points) in the remaining unaffected subgroups.
+
+* Divide Phase I data of the differences $x_{ij}, i=1,2,...,k$ and $j=1,2,..,n_i$ into $k$ subgroups of size $n_i$.
+* Calculate $\overline{IQR}_{10}$ as given in above. The variable control limits for screening the subgroup shifts are as follows:
+$\widehat{UCL}_1=U_1(n_i)\frac{\overline{IQR}_{10}}{x_{\overline{IQR}_{10}}(n_i)}$ and $\widehat{LCL}_1=L_1(n_i)\frac{\overline{IQR}_{10}}{x_{\overline{IQR}_{10}}(n_i)}$, and $U_1$, $L_1$ and $d_{\overline{IQR}_{10}}(n_i)$ are tabulated in  Table~1 of @Nazir2014130.
+* Exclude all the subgroups whose $IQR/d_{IQR}$ falls outside the control limits stated above.
+* The residuals of each of the individual observation in the remaining subgroups are calculated by subtracting  the \emph{trimean} of corresponding  subgroup. $res_{x_{ij}}= x_{ij}-TM_i$, where, $TM_i=(Q_{i,1}+2Q_{i,2}+Q_{i,3})/4$ and $Q_{i,2}$ is the median of subgroup $i$. The residual values of each observation are then screened. The  average $IQR$ of remaining subgroups ($\overline{IQR}'$) is used to identify the outliers in residuals. The control limits are varied depending on the subgroup size: $UCL_{ind}=3\overline{IQR}'/x_{IQR}(n_i), LCL_{ind}=-3\overline{IQR}'/x_{IQR}(n_i)$.
+* The original individual values are removed in each subgroup, when the residuals breach the calculated limits in *Step 4*.
+* After eliminating individual outliers, a new estimate of the standard deviation is obtained from the mean of standard deviations of remaining  subgroups for Phase~II analysis. Each subgroup standard deviation is adjusted by dividing $c_4(n_i)$.
+	
+## Estimation of $\mu$ for Phase~II
+
+* Obtain the unbiased estimate for standard deviation ($\hat{\sigma_x}$) using the above procedure.
+* For $\bar{x}$, instead of the traditional $\bar{x_i}$ of each subgroup, the trimeans of each subgroup is calculated; $TM_{(m)}$ denotes the $m^{\mathrm{th}}$ ordered value of the subgroup trimeans. The trimean of subgroup $i$ is defined by, $TM_i=(Q_{i,1}+2Q_{i,2}+Q_{i,3})/4$, where $Q_{i,2}$ is the median and $Q_{i,1}=x_{i,(a)}$ and $Q_{i,3}=x_{i,(a)}$ the first and third quartiles with $x_{i,(m)}$ the $m^{\mathrm{th}}$ order statistic in subgroup $i$ and $a=\left \lceil n_i/4 \right \rceil, b=n_i-a+1$.
+* The 10\% trimmed mean: $TM_{10}$,  of sample trimeans is used to get the control limits for the $\bar{x}$ chart as follows:
+
+$$\overline{TM}_{10}=\frac{1}{k-2\left \lceil k/10 \right \rceil}\left [ \sum_{m=\left \lceil k/10 \right \rceil+1}^{k-\left \lceil k/10 \right \rceil} TM_{\left (m  \right )}\right ]$$
+
+The upper and lower control limits are given by $\overline{TM}_{10}\pm3\hat{\sigma_d}/\sqrt{n_i}$.
+	
+* Those subgroups whose $TM_i$ fall outside the control limits are removed and the average of the trimeans ($\overline{TM}'$) in the remaining subgroups is used to identify the individual outliers for the remaining unaffected subgroups.
+* Remove individual observations falling outside the limits $\overline{TM}'\pm3\hat{\sigma_d}$.
+* The mean of remaining subgroups (with remaining individual observations) is used for computing mean ($\bar{\bar{x}}$) and the associated Phase~II control limits.
+
+## Examples
+
+The example given in @Nazir2014130 and @Nazir2014246 has choosen. 
+
+
+## References
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
