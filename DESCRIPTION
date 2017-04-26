@@ -1,0 +1,14 @@
+Package: QCCTS
+Type: Package
+Title: Quality Control Charts for Time Series
+Version: 0.1.0
+Author: Nadeeka Premarathna<n.premarathna@massey.ac.nz>
+Contributer: A. Jonathan R. Godfrey<A.J.Godfrey@massey.ac.nz> Kondaswamy Govindaraju<k.govindaraju@massey.ac.nz>
+Maintainer: Nadeeka Premarathna<n.premarathna@massey.ac.nz>
+Description: Applying Shewhart quality control principles for time series data. The package performers following tasks including: subgrouping for various time intervals; obtaining subgroup summaries (e.g. mean, standard deviation,  skewness,  kurtosis ); partitioning data into common and special cause using Shewhat S chart; estimate mean and standard deviation using stepwise Shewhart  robust chart procedures;  other robust estimators for standard deviation}; calculating the first four  moments in total, common and special cause partitions; Difference charts (mean and standard deviation) and plotting charts.
+Imports: zoo,xts,IQCC,moments
+License: GPL-3
+LazyData: TRUE
+RoxygenNote: 6.0.1
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr
